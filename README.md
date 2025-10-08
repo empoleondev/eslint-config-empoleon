@@ -1,9 +1,9 @@
-# eslint-config-mantine
+# eslint-config-empoleon
 
 ## Install
 
 ```sh
-yarn add --dev @eslint/js eslint eslint-plugin-jsx-a11y eslint-plugin-react typescript-eslint eslint-config-mantine
+yarn add --dev @eslint/js eslint eslint-plugin-jsx-a11y eslint-plugin-solid typescript-eslint eslint-config-empoleon
 ```
 
 ## Usage
@@ -11,14 +11,14 @@ yarn add --dev @eslint/js eslint eslint-plugin-jsx-a11y eslint-plugin-react type
 In your `eslint.config.js`:
 
 ```tsx
-import mantine from "eslint-config-mantine";
+import empoleon from "eslint-config-empoleon";
 import { defineConfig } from "eslint/config";
 import tseslint from "typescript-eslint";
 
 // @ts-check
 export default defineConfig(
   tseslint.configs.recommended,
-  ...mantine,
+  ...empoleon,
   { ignores: ["**/*.{mjs,cjs,js,d.ts,d.mts}"] },
   {
     files: ["**/*.story.tsx"],

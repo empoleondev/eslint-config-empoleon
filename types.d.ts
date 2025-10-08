@@ -1,1 +1,1 @@
-declare module 'eslint-config-mantine';
+declare module 'eslint-config-empoleon';
