@@ -5,8 +5,8 @@ on:
     branches:
       - main
     paths:
-      - ".changeset/**"
-      - "packages/**"
+      - "package.json"
+      - "eslint.config.js"
   workflow_dispatch:
 
 jobs:
@@ -18,7 +18,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
@@ -29,18 +29,10 @@ jobs:
           registry-url: https://registry.npmjs.org
           cache: yarn
 
-      - name: Install deps
-        run: yarn install --immutable
-
-      - name: Build
-        run: yarn build
-
       - name: Get version
         id: version
         run: |
-          # Grab the version into a shell variable
           version=$(node -p "require('./package.json').version")
-          # Append it correctly into GITHUB_OUTPUT
           echo "version=$version" >> $GITHUB_OUTPUT
 
       - name: Check if version exists on npm
@@ -49,7 +41,6 @@ jobs:
           PACKAGE_NAME=$(node -p "require('./package.json').name")
           VERSION=${{ steps.version.outputs.version }}
           
-          # Check if the version exists
           if npm view "$PACKAGE_NAME@$VERSION" version > /dev/null 2>&1; then
             echo "Version $VERSION already exists on npm"
             echo "exists=true" >> $GITHUB_OUTPUT
@@ -62,16 +53,14 @@ jobs:
         if: steps.check_version.outputs.exists == 'false'
         run: yarn npm publish --access public
         env:
-          YARN_NPM_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}      
-
-      - name: Install new-github-release-url
-        run: yarn add new-github-release-url
+          YARN_NPM_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Create GitHub Release
         if: steps.check_version.outputs.exists == 'false'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ steps.version.outputs.version }}
-          name: v${{ steps.version.outputs.version }}
+          name: Release v${{ steps.version.outputs.version }}
           generate_release_notes: true
-          
+          draft: false
+          prerelease: false
